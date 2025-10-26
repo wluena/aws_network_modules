@@ -26,9 +26,9 @@ resource "aws_internet_gateway" "igw" {
 
 # Public Subnets (Using count to create multiple subnets from the list variable)
 resource "aws_subnet" "public" {
-  count = length(var.public_cidr_blocks)
+  count = var.public_subnet_count
   vpc_id            = aws_vpc.vpc.id
-  cidr_block        = element(var.public_cidr_blocks, count.index)
+  #cidr_block        = element(var.public_cidr_blocks, count.index)
   map_public_ip_on_launch = true
   availability_zone = data.aws_availability_zones.available.names[count.index]
   tags = merge(
