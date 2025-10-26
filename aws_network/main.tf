@@ -12,7 +12,7 @@ locals {
 }
 # VPC Resource
 resource "aws_vpc" "vpc" {
-  cidr_block           = var.vpc_cidr
+  cidr_block             = var.cidr_block
   enable_dns_support   = true
   enable_dns_hostnames = true
   tags = local.default_tags
