@@ -70,7 +70,7 @@ resource "aws_instance" "my_amazon" {
   associate_public_ip_address = true # Must be true for public subnet
   user_data = templatefile("${path.module}/install_httpd.sh.tpl", {
     message    = "ACS730 Week 5, Session 1"
-    private_ip = aws_instance.web[count.index].private_ip
+    private_ip = aws_instance.my_amazon[count.index].private_ip
   })
 
   tags = merge(var.default_tags,
