@@ -26,11 +26,16 @@ resource "aws_internet_gateway" "igw" {
 
 # Public Subnets (Using count to create multiple subnets from the list variable)
 resource "aws_subnet" "public" {
-  count = var.public_subnet_count
-  vpc_id            = aws_vpc.vpc.id
-  #cidr_block        = element(var.public_cidr_blocks, count.index)
+  count = var.public_subnet_count # Corrected from 'length(var.public_cidr_blocks)'
+
+  vpc_id                  = aws_vpc.vpc.id
   map_public_ip_on_launch = true
-  availability_zone = data.aws_availability_zones.available.names[count.index]
+  availability_zone       = data.aws_availability_zones.available.names[count.index]
+
+  # CRITICAL FIX: Implement CIDR calculation
+  # This calculates a /24 subnet (8 new bits) starting from index 0 of the main VPC CIDR.
+  cidr_block = cidrsubnet(var.cidr_block, 8, count.index) 
+
   tags = merge(
     local.default_tags,
     {
