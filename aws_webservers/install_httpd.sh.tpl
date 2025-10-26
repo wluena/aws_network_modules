@@ -1,5 +1,7 @@
 #!/bin/bash
 
+private_ip=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
+
 # Update and install Apache
 yum update -y
 yum install -y httpd
@@ -8,6 +10,5 @@ yum install -y httpd
 systemctl start httpd
 systemctl enable httpd
 
-# Create dynamic index.html using variables passed from Terraform
-echo "Welcome to ${message}! My private IP is ${private_ip}" > /var/www/html/index.html
-echo "Built by Terraform!" >> /var/www/html/index.html
+# Create dynamic index.html using template variable and shell variable
+echo "Welcome to ${message}! My private IP is $private_ip" > /var/www/html/index.html
