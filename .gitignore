@@ -1,0 +1,5 @@
+# Git ignore file content
+.git/
+.terraform/
+*.tfstate
+*.tfstate.backup
