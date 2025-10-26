@@ -32,9 +32,11 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
   availability_zone = data.aws_availability_zones.available.names[count.index]
   tags = merge(
-    var.dmerge(local.default_tags, {
-    Name = "${local.standard_name}-public-subnet-${count.index + 1}"
-  })
+    local.default_tags,
+    {
+      "Name" = "${local.standard_name}-public-subnet-${count.index + 1}"
+    }
+  )
 }
 
 # Data source to get available AZs
