@@ -1,3 +1,21 @@
+// New Variable for Naming Convention
+variable "namespace" {
+  type        = string
+  description = "A short (3-4 letters) abbreviation of the company name for globally unique IDs."
+}
+
+// Ensure 'stage' (which is passed as 'env' in your current setup) is defined
+variable "stage" {
+  type        = string
+  description = "The name or role of the account the resource is for (e.g., prod or dev)."
+}
+
+// Ensure 'name' (which is passed as 'prefix' in your current setup) is defined
+variable "name" {
+  type        = string
+  description = "The name of the component that owns the resources (e.g., vpc)."
+}
+
 # Default tags
 variable "default_tags" {
   default = {
@@ -36,7 +54,3 @@ variable "env" {
   description = "Deployment Environment"
 }
 
-variable "public_cidr_blocks" {
-  type        = list(string)
-  description = "Public Subnet CIDRs"
-}

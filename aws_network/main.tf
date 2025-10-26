@@ -1,20 +1,27 @@
+locals {
+  // Standard name tag format: {namespace}-{stage}-{name}
+  standard_name = "${var.namespace}-${var.stage}-${var.name}"
+
+  // Define default tags that use the new convention
+  default_tags = {
+    Name        = local.standard_name
+    Stage       = var.stage
+    Namespace   = var.namespace
+    ManagedBy   = "Terraform"
+  }
+}
 # VPC Resource
 resource "aws_vpc" "vpc" {
   cidr_block           = var.vpc_cidr
   enable_dns_support   = true
   enable_dns_hostnames = true
-  tags = merge(
-    var.default_tags,
-    {
-      Name = "${var.prefix}-vpc"
-    }
-  )
+  tags = local.default_tags
 }
 
 # Internet Gateway
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc.id
-  tags   = var.default_tags
+  tags = local.default_tags
 }
 
 # Public Subnets (Using count to create multiple subnets from the list variable)
@@ -25,11 +32,9 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
   availability_zone = data.aws_availability_zones.available.names[count.index]
   tags = merge(
-    var.default_tags,
-    {
-      Name = "${var.prefix}-public-subnet-${count.index + 1}"
-    }
-  )
+    var.dmerge(local.default_tags, {
+    Name = "${local.standard_name}-public-subnet-${count.index + 1}"
+  })
 }
 
 # Data source to get available AZs
@@ -45,12 +50,7 @@ resource "aws_route_table" "public" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.igw.id
   }
-  tags = merge(
-    var.default_tags,
-    {
-      Name = "${var.prefix}-public-rt"
-    }
-  )
+  tags = local.default_tags
 }
 
 # Route Table Association for Public Subnets
