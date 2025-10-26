@@ -68,7 +68,10 @@ resource "aws_instance" "my_amazon" {
   subnet_id                   = element(var.public_subnets, count.index % length(var.public_subnets)) 
   security_groups             = [aws_security_group.web_sg.id]
   associate_public_ip_address = true # Must be true for public subnet
-  user_data                   = file("${path.module}/install_httpd.sh") # Assuming this script exists in the module folder
+  user_data = templatefile("${path.module}/install_httpd.sh.tpl", {
+    message    = "ACS730 Week 5, Session 1"
+    private_ip = aws_instance.web[count.index].private_ip
+  })
 
   tags = merge(var.default_tags,
     {
