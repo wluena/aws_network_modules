@@ -69,8 +69,8 @@ resource "aws_instance" "my_amazon" {
   security_groups             = [aws_security_group.web_sg.id]
   associate_public_ip_address = true # Must be true for public subnet
   user_data = templatefile("${path.module}/install_httpd.sh.tpl", {
-  message = "ACS730 Week 5, Session 2"
-})
+  env = var.env 
+  })
 
   tags = merge(var.default_tags,
     {

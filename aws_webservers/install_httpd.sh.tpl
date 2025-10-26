@@ -1,14 +1,25 @@
 #!/bin/bash
+yum -y update
+yum -y install httpd
 
-private_ip=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
-
-# Update and install Apache
-yum update -y
-yum install -y httpd
+# CRITICAL FIX: Use command substitution to capture the IP address
+mypip=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
 
 # Start and enable the service
 systemctl start httpd
 systemctl enable httpd
 
-# Create dynamic index.html using template variable and shell variable
-echo "Welcome to ${message}! My private IP is $private_ip" > /var/www/html/index.html
+# Use HTML to write the index.html file
+cat <<EOF > /var/www/html/index.html
+<html>
+  <head>
+    <title>Webserver Deployed by Terraform</title>
+  </head>
+  <body>
+    <h1>Welcome to ACS730 Week 5, Session 1! My private IP is $mypip</h1>
+    
+    <p style="color: red;">My environment is ${env}</p>
+    
+  </body>
+</html>
+EOF
